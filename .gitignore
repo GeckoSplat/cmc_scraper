@@ -1,4 +1,4 @@
 /target
-apidata.json
+config.json
 Cargo.lock
 .vscode/launch.json
