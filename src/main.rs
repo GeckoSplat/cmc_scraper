@@ -2,15 +2,13 @@ mod api;
 mod config;
 
 use clap::Parser;
-//std::env::args;
 use anyhow::Result;
 use api::{Response, Status};
 use config::Config;
 
 #[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
 struct Args {
-    /// Name of the person to greet
+
     #[arg(short, long)]
     start: String,
 
@@ -21,13 +19,13 @@ struct Args {
     convert: String,
 }
 
-fn main() {
-    // Add error handling for I/O errors
-    // cannot figure out try catch in rust
-
+fn main() -> Result<()> {
     let args = Args::parse();
 
-    println!("{},{},{}", args.start, args.limit, args.convert);
+    println!(
+        "Arguments are {},{},{}\n",
+        args.start, args.limit, args.convert
+    );
 
     let text = std::fs::read_to_string("config.json").unwrap();
     let config = serde_json::from_str::<Config>(&text).unwrap();
@@ -63,4 +61,5 @@ fn main() {
             crypto.quote.get("GBP").unwrap().percent_change_24h
         );
     }
+    Ok(())
 }
