@@ -2,7 +2,7 @@ mod api;
 mod config;
 
 use anyhow::Result;
-use api::{Response, Status};
+use api::{Response};
 use clap::Parser;
 use config::Config;
 use serde_json::Value::Null;
