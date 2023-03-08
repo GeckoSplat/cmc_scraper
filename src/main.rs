@@ -1,14 +1,14 @@
 mod api;
 mod config;
 
-use clap::Parser;
 use anyhow::Result;
 use api::{Response, Status};
+use clap::Parser;
 use config::Config;
+use serde_json::Value::Null;
 
 #[derive(Parser, Debug)]
 struct Args {
-
     #[arg(short, long)]
     start: String,
 
@@ -23,7 +23,7 @@ fn main() -> Result<()> {
     let args = Args::parse();
 
     println!(
-        "Arguments are {},{},{}\n",
+        "\nArguments are {},{},{}\n",
         args.start, args.limit, args.convert
     );
 
@@ -47,19 +47,21 @@ fn main() -> Result<()> {
         .unwrap();
 
     let result: Response = serde_json::from_str(&response).unwrap();
-
     // TODO: can check status to see if error, inform user of error or print result if ok
 
-    for crypto in result.data {
-        // TODO: make currency configurable
-        // need to change url and api.rs to manage this
-        println!(
-            "Name: {}\nSymbol: {}\nPrice £{}\n24h % Change: {}\n",
-            crypto.name,
-            crypto.symbol,
-            crypto.quote.get("GBP").unwrap().price,
-            crypto.quote.get("GBP").unwrap().percent_change_24h
-        );
+    if result.status.error_message != Null {
+        println!("API STATUS ERROR !")
+    } else {
+        for crypto in result.data {
+            println!(
+                "Name: {}\nSymbol: {}\nPrice £{}\n24h % Change: {}\n",
+                crypto.name,
+                crypto.symbol,
+                crypto.quote.get("GBP").unwrap().price,
+                crypto.quote.get("GBP").unwrap().percent_change_24h
+            );
+        }
     }
+
     Ok(())
 }
