@@ -2,4 +2,3 @@
 config.json
 Cargo.lock
 .vscode/launch.json
-apidata.json

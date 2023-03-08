@@ -26,7 +26,7 @@ fn main() -> Result<()> {
         "\nArguments are {},{},{}\n",
         args.start, args.limit, args.convert
     );
-
+    let arg_to_print = args.convert.clone();
     let text = std::fs::read_to_string("config.json").unwrap();
     let config = serde_json::from_str::<Config>(&text).unwrap();
 
@@ -47,18 +47,17 @@ fn main() -> Result<()> {
         .unwrap();
 
     let result: Response = serde_json::from_str(&response).unwrap();
-    // TODO: can check status to see if error, inform user of error or print result if ok
 
     if result.status.error_message != Null {
         println!("API STATUS ERROR !")
     } else {
         for crypto in result.data {
             println!(
-                "Name: {}\nSymbol: {}\nPrice £{}\n24h % Change: {}\n",
+                "Name: {}\nSymbol: {}\nPrice in {arg_to_print}:  {}\n24h % Change: {}\n",
                 crypto.name,
                 crypto.symbol,
-                crypto.quote.get("GBP").unwrap().price,
-                crypto.quote.get("GBP").unwrap().percent_change_24h
+                crypto.quote.get(&String::from(arg_to_print.clone())).unwrap().price,
+                crypto.quote.get(&String::from(arg_to_print.clone())).unwrap().percent_change_24h
             );
         }
     }
